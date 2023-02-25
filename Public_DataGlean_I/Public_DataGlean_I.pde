@@ -24,7 +24,7 @@ JSONArray x_values;
 JSONArray y_values;
 
 PImage fig;
-String path = "Maher and Shaw 2010 Figure 5, rifle and handgun Leqs.png";
+String path = "LD831-LOWN_with378A04_dynamicRange.png";
 int path_len = path.length();
 int counter = 0;
 int enter_count = 0;
@@ -61,9 +61,9 @@ float Y_max_I; // numeric inputs for bound values
 float Y_min_I;
 float X_min_I;
 float X_max_I;
-float[] xs;
+float[] xs = new float[1];
 float x_trans; // translated output co-ordinates
-float[] ys;
+float[] ys = new float[1];
 float y_trans;
 
 boolean save;
@@ -84,6 +84,13 @@ void setup(){
 }
 
 void draw(){
+  if(stage_two == true){
+    for (int i = 0; i < xs.length; i = i+1) {
+      stroke(67, 224, 20);
+      strokeWeight(3);
+      point(xs[i], ys[i]);
+    }
+  }
 }
 
 /*
@@ -140,6 +147,11 @@ void mousePressed(){
     println("\n\nNow we'll enter indicated bound values. Press DOWN to begin.");
   }
   else if (counter >3) {
+    
+    // we'll draw to screen to keep people aware
+    // of what they've drawn so far...
+    xs = append(xs, float(mouseX));
+    ys = append(ys, float(mouseY));
     
     x_trans = map(mouseX, X_min_final, X_max_final, X_min_I, X_max_I);
     y_trans = map(mouseY, Y_min_final, Y_max_final, Y_min_I, Y_max_I);
@@ -233,7 +245,7 @@ void keyPressed(){
       println("\n\nSaving JSON file for", series_name, "!");
       json.setJSONArray("x", x_values);
       json.setJSONArray("y", y_values);
-      saveJSONObject(json, "data/dataThief_output_" + path.substring(0, path_len - 4) + "_" + series_name + ".json");
+      saveJSONObject(json, "data/dataGlean_output_" + path.substring(0, path_len - 4) + "_" + series_name + ".json");
     }
     
     // intitialize a new output file for each series 
