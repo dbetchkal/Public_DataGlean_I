@@ -7,8 +7,12 @@ From a static plot:
  - we glean one or multiple (x,y) series with the mouse, 
  - writing each series to [a JSON file](https://github.com/dbetchkal/Public_DataGlean_I/blob/main/Public_DataGlean_I/data/dataThief_output_L90%20vs%20S_Series1.json).
 
-To use, download this repository. Save an image file (if necessary, scaling so that dimensions are less than 1000x1000 px.)
-Change the `path` variable, and press *Run*. Follow the directions in the console.
+## Quick Start
+
+Download this repository. <br>
+Save an image file to the `Processing` 'data' folder. <br>
+Change the `path` variable, and press *Run*. <br>
+Follow the directions in the console.
 
 ## Tutorial
 Consider the image from [*Betchkal et al. 2022*, Figure 10](https://irma.nps.gov/DataStore/DownloadFile/671164), which shows species richness, $S$, versus the tenth-percentile sound level of an environment, $L_{90}$: <br><br>
