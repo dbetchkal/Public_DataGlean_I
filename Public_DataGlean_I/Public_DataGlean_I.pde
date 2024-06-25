@@ -1,13 +1,19 @@
 /*   Public_DataGlean_I
 
       Davyd_Betchkal@nps.gov
+      
+      v1.1.1 add visual cursor 
+             allow for variable image scaling
+             include reference example
+      v1.1.0 add support for log axes
+      v1.0.0 initial release
 
      A public reboot around the concept of "DataThief",
      B. Tummers, DataThief III. 2006 <https://datathief.org/>
        for freeing useful numeric results 
        that are 'locked up' in a plot
      
-     From a static plot:
+     From a static, linearly-scaled plot:
        - we define the Y, then X range bounds with the mouse, then...
        - we give the bounds numeric values with the keyboard, then...
        - we glean multiple (x,y) series with the mouse, 
@@ -19,12 +25,18 @@
 
 */
 
+String version_string = "v1.1.1";
 JSONObject json;
+JSONArray version;
 JSONArray x_values;
 JSONArray y_values;
+JSONArray extrema;
 
 PImage fig;
-String path = "LD831-LOWN_with378A04_dynamicRange.png";
+// ===================== HERE'S WHAT YOU NEED TO EDIT =================================================
+// a path:
+String path = "L90 vs S.png"; // included example "L90 vs S.png"
+// ====================================================================================================
 int path_len = path.length();
 int counter = 0;
 int enter_count = 0;
@@ -61,36 +73,36 @@ float Y_max_I; // numeric inputs for bound values
 float Y_min_I;
 float X_min_I;
 float X_max_I;
-float[] xs = new float[1];
+float[] xs;
 float x_trans; // translated output co-ordinates
-float[] ys = new float[1];
+float x_min_trans;
+float x_max_trans;
+float[] ys;
 float y_trans;
+float y_min_trans;
+float y_max_trans;
 
 boolean save;
 boolean stage_two = false;
 String value;
 
-void setup(){
-  
-  background(0);
-  size(1000, 1000);
-  
+void settings(){
   fig = loadImage(path);
-  imageMode(CENTER);
-  image(fig, 500, 500); 
-  
-  println("First step: click the UPPER Y range bound.");
-
+  size(fig.width, fig.height); // dynamically size the frame to fit the figure to be digitized
 }
 
+void setup(){
+  background(0);
+  println("First step: click the UPPER Y range bound.");
+}
+
+
 void draw(){
-  if(stage_two == true){
-    for (int i = 0; i < xs.length; i = i+1) {
-      stroke(67, 224, 20);
-      strokeWeight(3);
-      point(xs[i], ys[i]);
-    }
-  }
+  imageMode(CENTER);
+  stroke(#2CFF1A);
+  image(fig, fig.width/2, fig.height/2); 
+  line(mouseX, 0, mouseX, fig.height);
+  line(0, mouseY, fig.width, mouseY);
 }
 
 /*
@@ -148,17 +160,30 @@ void mousePressed(){
   }
   else if (counter >3) {
     
-    // we'll draw to screen to keep people aware
-    // of what they've drawn so far...
-    xs = append(xs, float(mouseX));
-    ys = append(ys, float(mouseY));
-    
     x_trans = map(mouseX, X_min_final, X_max_final, X_min_I, X_max_I);
     y_trans = map(mouseY, Y_min_final, Y_max_final, Y_min_I, Y_max_I);
     
+    // for quality control we bound well-intentioned points
+    // to the indicated extrema
+    x_min_trans = map(X_min_final, X_min_final, X_max_final, X_min_I, X_max_I);
+    x_max_trans = map(X_max_final, X_min_final, X_max_final, X_min_I, X_max_I);
+    y_min_trans = map(Y_min_final, Y_min_final, Y_max_final, Y_min_I, Y_max_I);
+    y_max_trans = map(Y_max_final, Y_min_final, Y_max_final, Y_min_I, Y_max_I);
+    
+    print(x_min_trans, y_min_trans, x_max_trans, y_max_trans);
+    
     // quality control
-    if (x_trans < 0.0){
-      x_trans = 0.0;
+    if (x_trans < x_min_trans){
+      x_trans = x_min_trans;
+    }
+    if (x_trans > x_max_trans){
+      x_trans = x_max_trans;
+    }
+    if (y_trans < y_min_trans){
+      y_trans = y_min_trans;
+    }
+    if (y_trans > y_max_trans){
+      y_trans = y_max_trans;
     }
     
     println("\t", x_trans, y_trans);
@@ -188,24 +213,28 @@ void keyPressed(){
       switch(str(enter_count)){
         case "0":
           Y_max_I = float(value.substring(1));
-          println("\t", Y_max_I, "        press DOWN to continue."); 
+          println("\t", Y_max_I, "        press DOWN to continue. Press UP to re-enter."); 
           break;
         case "1":
           Y_min_I = float(value.substring(1));
-          println("\t", Y_min_I, "        press DOWN to continue."); 
+          println("\t", Y_min_I, "        press DOWN to continue. Press UP to re-enter."); 
           break;
         case "2":
           X_min_I = float(value.substring(1));
-          println("\t", X_min_I, "        press DOWN to continue."); 
+          println("\t", X_min_I, "        press DOWN to continue. Press UP to re-enter."); 
           break;
         case "3":
           X_max_I = float(value.substring(1));
           println("\t", X_max_I, "\n");
-          println("\n\nPress 'S' to start your first Series.");
+          println("\n\nPress 'S' to start your first Series. Press UP to re-enter.");
       }
       
       enter_count = enter_count + 1;
       save = false;
+    }
+    
+    if (keyCode == UP) {
+      enter_count = enter_count - 1;
     }
 
     // 'Turn on' 
@@ -241,17 +270,34 @@ void keyPressed(){
     
 
     if(series_count > 0){
+      
+      // we'll keep track of the software version in the results
+      version = version.append(version_string);
+    
+      // and we'll immediately append the extrema 
+      // determined for the plot: [xmin, ymin, xmax, ymax]
+      extrema = extrema.append(x_min_trans);
+      extrema = extrema.append(y_min_trans);
+      extrema = extrema.append(x_max_trans);
+      extrema = extrema.append(y_max_trans);
+      
       // save out the JSON file
       println("\n\nSaving JSON file for", series_name, "!");
+      json.setJSONArray("version", version);
       json.setJSONArray("x", x_values);
       json.setJSONArray("y", y_values);
-      saveJSONObject(json, "data/dataGlean_output_" + path.substring(0, path_len - 4) + "_" + series_name + ".json");
+      json.setJSONArray("bounds", extrema);
+      
+      saveJSONObject(json, "data/dataThief_output_" + path.substring(0, path_len - 4) + "_" + series_name + ".json");
     }
     
     // intitialize a new output file for each series 
     json = new JSONObject(); 
+    version = new JSONArray();
     x_values = new JSONArray();
     y_values = new JSONArray();
+    extrema = new JSONArray();
+    
     
     series_count = series_count + 1; // ...thus, "Series1" is the first
     series_name = "Series" + str(series_count);
