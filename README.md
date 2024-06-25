@@ -11,14 +11,20 @@ To use, download this repository. Save an image file (if necessary, scaling so t
 Change the `path` variable, and press *Run*. Follow the directions in the console.
 
 ## Tutorial
-Consider the example image from [*Betchkal et al. 2022*, Figure 10](https://irma.nps.gov/DataStore/DownloadFile/671164), which shows species richness, $S$, versus the tenth-percentile sound level of an environment, $L_{90}$: <br><br>
-<img src=https://github.com/dbetchkal/Public_DataGlean_I/blob/main/Public_DataGlean_I/data/L90%20vs%20S.png width=700></img>
+Consider the image from [*Betchkal et al. 2022*, Figure 10](https://irma.nps.gov/DataStore/DownloadFile/671164), which shows species richness, $S$, versus the tenth-percentile sound level of an environment, $L_{90}$: <br><br>
+<img src=https://github.com/dbetchkal/Public_DataGlean_I/blob/main/Public_DataGlean_I/data/L90%20vs%20S.png height=400></img>
 
-Say we're replicating this experiment and we'd like to recover the co-ordinates of the reddish points from this plot without the original data. The process requires mapping the *image co-ordinates* back into the *measurement co-ordinates*. `Public_DataGlean_I` allows us to perform this task. 
+The image is included with the repository. Say we're replicating this experiment and we'd like to recover the co-ordinates of points from this plot without access to the original data. The process requires mapping the *image co-ordinates* back into the *measurement co-ordinates*. `Public_DataGlean_I` allows us to perform this task. 
 
 ### Step One: enumerate the bounds on each figure axis
 
-### Step Two: indicate the series of points desired
+The first step involves clicking each **linear-scale, orthogonal** axis bound in sequence: {`Y_max`, `Y_min`, `X_min`, `X_max`}, for which `Public_DataGlean_I` will print the pixel coordinates to the console. The user may choose any reference point on the original image as long as the set bounds the data to be gleaned. The green linear guides indicate the user's `mouseX` and `mouseY` positions, shown in the image below before clicking `X_max` ($L_{90}$ = 30.0). After each bound is clicked, the user sequentially enters the corresponding numeric value from the figure for each reference point using the keyboard. Pressing the up-arrow ⬆️ allows a given numeric value of the axis bound to be re-entered. Pressing the down-arrow ⬇️ key advances to the next axis bound. <br><br>
+<img src=https://github.com/dbetchkal/Public_DataGlean_I/blob/main/static/Public_DataGlean_I%20tutorial%20step%20one.png height=400></img>
+
+### Step Two: glean the series of points
+
+The second step simply involves clicking a series of points to write their estimated figure co-cordinates to a file. The user begins data entry for a series by pressing the 'S' key. As in step one, the green linear guides follow the user's `mouseX` and `mouseY` positions. The image below shows the console output immediately after clicking the red point labeled 'TKAN' co-ordinates of roughly (17.0, 17.3). To begin a new series, press 'S' again. To close the file/program, press 'C'. <br><br>
+<img src=https://github.com/dbetchkal/Public_DataGlean_I/blob/main/static/Public_DataGlean_I%20tutorial%20step%20two.png height=400></img>
 
 ## Public domain
 
