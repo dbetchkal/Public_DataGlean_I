@@ -30,6 +30,12 @@ The first step involves clicking each **linear-scale, orthogonal** axis bound in
 The second step simply involves clicking a series of points to write their estimated figure co-cordinates to a file. The user begins data entry for a series by pressing the 'S' key. As in step one, the green linear guides follow the user's `mouseX` and `mouseY` positions. The image below shows the console output immediately after clicking the red point labeled 'TKAN' co-ordinates of roughly (17.0, 17.3). To begin a new series, press 'S' again. To close the file/program, press 'C'. <br><br>
 <img src=https://github.com/dbetchkal/Public_DataGlean_I/blob/main/static/Public_DataGlean_I%20tutorial%20step%20two.png height=400></img>
 
+## Python parsing support
+Basic `Python` parsing support *.geojson* $\rightarrow$ `pandas.DataFrame` is provided as `Public_DataGlean_I.read_Dataglean_json()`. Bi-directional transformations from logarithmic to linear axes may be performed using they keyword parameters of the function. For example:
+>`data, bounds = read_Dataglean_json(dg_path, x_to_log=False, y_to_log=False, x_from_log=False, y_from_log=False)` <br>
+>`plt.plot(data["x"], data["y"]) # convenient plotting` <br>
+>`bounds # returns [0, 20, 20, 110] corresponding to xmin,ymin,xmax,ymax`
+
 ## Public domain
 
 This project is in the worldwide [public domain](LICENSE.md). As stated in [CONTRIBUTING](CONTRIBUTING.md):
